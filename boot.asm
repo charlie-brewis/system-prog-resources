@@ -1,5 +1,5 @@
 
-; Jumps to the current memory address
+; Jumps to the current memory address - i.e., The boot will infinately loop
 jmp $
 
 /* 
