@@ -6,5 +6,5 @@ At first i am using [this](https://www.youtube.com/watch?v=MwPjvJ9ulSc&list=PLm3
 
 ___
 ## Software used:
-Assembler - NASM version 2.16.02
+Assembler - NASM version 2.16.02  
 Virtual Machine - Qemu
