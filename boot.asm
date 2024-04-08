@@ -24,11 +24,31 @@ int 0x10
 ; Instead we can use ascii Values, this lets us easily print the alphabet in very few lines:
 ALPH_LOOP_START:
     inc al  ; First, increment al by 1
+    cmp al, 'Z' + 1
+    je ALPH_LOOP_END ; If al is equal to Z+1, don't print interrupt and jump to the end of the loop
     int 0x10
-    ; If the ascii value is equal to  Z, we do not resart the loop
-    cmp al, 'Z' 
-    jne ALPH_LOOP_START
+    jmp ALPH_LOOP_START
+ALPH_LOOP_END:
 
+; Challenge to make a program that outputs the alphabet in alternating caps
+mov al, 10 ; New Line
+int 0x10
+mov al, 13 ; Carraige return
+int 0x10
+mov al, 65 
+int 0x10
+ALPH_CHALLENGE_LOOP_START:
+    cmp al, 91 ; a
+    jl add32
+    sub al, 32
+    jmp skipadd
+    add32:
+        add al, 32
+    skipadd:
+    inc al 
+    int 0x10
+    cmp al, 'z'
+    jne ALPH_CHALLENGE_LOOP_START
 
 
 
@@ -37,7 +57,6 @@ ALPH_LOOP_START:
 ;* Booting
 ; Jumps to the current memory address - i.e., The boot will infinately loop
 jmp $
-
 
 ; A boot sector is always 512 bytes (i.e., assembly lines) long. 
 ; Therefore this command 'define byte 0's the exact number of times needed to get to 510 lines 
