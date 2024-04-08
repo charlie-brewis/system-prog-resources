@@ -51,6 +51,37 @@ ALPH_CHALLENGE_LOOP_START:
     jne ALPH_CHALLENGE_LOOP_START
 
 
+mov al, 10 ; New Line
+int 0x10
+mov al, 13 ; Carraige return
+int 0x10
+
+
+; We can declare strings with variable names using labels and db
+myHelloVariable:
+    db "Hello World!", 0 ; the 0 indidcates the end of the string in memory
+
+mov ah, 0x0e ; again we put the system into TTY mode
+; mov al, [myHelloVariable] ; the square brackets makes it point to the memory location of the first char
+; This actually doesnt work as pointers in asm are initially ofset by 0x7c00
+; We could solve this issue using this line:
+; mov al, [myHelloVariable + 0x7c00]
+; However a better way to do this is to first set the origin of our memory addressing to 0x7c00 like so:
+[org 0x7c00]
+; mov al, [myHelloVariable] ; Now that we have set the pointer origin, this correctly prints the correct first character 'H'
+; However to print the whole string we have to use a loop:
+mov bx, myHelloVariable ; bx is a general use register
+
+printString:
+    mov al, [bx]
+    cmp al, 0
+    je endPrintString
+    int 0x10
+    inc bx
+    jmp printString
+endPrintString:
+int 0x10
+; See helloWorld.asm for a more consise example of string declaration and printing
 
 
 
