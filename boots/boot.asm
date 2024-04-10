@@ -58,6 +58,7 @@ int 0x10
 mov al, 13 ; Carraige return
 int 0x10
 
+;* STRINGS
 ; We can declare strings with variable names using labels and db
 myHelloVariable:
     db "Hello World!", 0 ; the 0 indidcates the end of the string in memory - null-ended
