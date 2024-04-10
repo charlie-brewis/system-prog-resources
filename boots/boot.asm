@@ -104,6 +104,22 @@ mov [char], al
 char: 
     db 0
 
+; Or we can use a loop to store a whole string
+; Defines a buffer variable of 10 empty memory cells
+buffer:
+    times 10 db 0
+
+mov bx, buffer ; bx now points to the first cell of our buffer
+mov ah, 0x00 ; Enter mode 0x00 (Read Character)
+
+inputString:
+    int 0x16 ; Call BIOS interrupt 0x16 (wait for keyboard input, set al to input character)
+    cmp al, 13 ; If the input character is enter, end input 
+    je endInput 
+    mov [bx], al ; Set the value that bx is pointing to to al (the input character)
+    inc bx ; Increment bx to point to the next cell
+    jmp inputString
+endInput:
 
 ;* BOOTING
 ; Jumps to the current memory address - i.e., The boot will infinately loop
