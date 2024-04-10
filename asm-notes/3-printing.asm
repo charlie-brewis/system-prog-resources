@@ -16,7 +16,7 @@ alphabetLoopStart:          ; This is called a label, it is a line that we can j
     jmp alphabetLoopStart   ; Jump back to the start of the loop
 alphabetLoopEnd:
 
-; Challenge: Make a loop that prints the alphabet in alternating caps
+;* Challenge: Make a loop that prints the alphabet in alternating caps
 
 
 jmp $ 
