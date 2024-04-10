@@ -134,13 +134,13 @@ mov sp, bp      ; Since the stack is empty we can set the stack pointer to the b
 mov bh, 'A'
 push bx         ; Give bx some value and push it to the stack
 mov bh, 'B'
-print:
+printSomething:
     mov ah, 0x0e
     mov al, bh 
     int 0x10
     ; Prints bh - 'B'
 pop bx 
-print:
+printSomethingElse:
     mov ah, 0x0e
     mov al, bh 
     int 0x10
@@ -151,7 +151,6 @@ print:
 ; They are pushed in this order and popped in reverse
 ; This is useful when the program needs to do another procedure with these registers but wants to save the state for after said procedure
 ; ... like a function
-
 
 
 
