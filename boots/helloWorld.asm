@@ -4,8 +4,6 @@
 myString:
     db "Hello World!", 0
 
-mov ax, 10
-
 mov ah, 0x0e
 mov bx, myString
 printString:

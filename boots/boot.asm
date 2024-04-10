@@ -5,7 +5,8 @@
 ;       qemu-system-x86_64 boot.bin
 
 
-;* Printing 
+
+;* PRINTING 
 ; We set the high section of the ax register to 0x0e to put the OS in teletype mode, allowing us to print
 mov ah, 0x0e
 ; We set the low section of the ax register to the character we want to print
@@ -35,6 +36,7 @@ mov al, 10 ; New Line
 int 0x10
 mov al, 13 ; Carraige return
 int 0x10
+
 mov al, 65 
 int 0x10
 ALPH_CHALLENGE_LOOP_START:
@@ -56,13 +58,12 @@ int 0x10
 mov al, 13 ; Carraige return
 int 0x10
 
-
 ; We can declare strings with variable names using labels and db
 myHelloVariable:
-    db "Hello World!", 0 ; the 0 indidcates the end of the string in memory
+    db "Hello World!", 0 ; the 0 indidcates the end of the string in memory - null-ended
 
 mov ah, 0x0e ; again we put the system into TTY mode
-; mov al, [myHelloVariable] ; the square brackets makes it point to the memory location of the first char
+; mov al, [myHelloVariable] ; the square brackets returns the value at the pointer - called dereferencing
 ; This actually doesnt work as pointers in asm are initially ofset by 0x7c00
 ; We could solve this issue using this line:
 ; mov al, [myHelloVariable + 0x7c00]
@@ -83,9 +84,28 @@ endPrintString:
 int 0x10
 ; See helloWorld.asm for a more consise example of string declaration and printing
 
+; Newline + carraige return
+mov al, 10 
+int 0x10
+mov al, 13 
+int 0x10
 
 
-;* Booting
+;* KEYBOARD INPUTS
+mov ah, 0x00 ; wait to read character from keyboard mode - char gets saved to al, scancode to ah
+int 0x16 ; call a keyboard services interrupt 
+
+; So now we can print the input character like so
+mov ah, 0x0e
+int 0x10
+
+; Or we can save the value to a variable
+char: 
+    db 0
+mov [char], al
+
+
+;* BOOTING
 ; Jumps to the current memory address - i.e., The boot will infinately loop
 jmp $
 
