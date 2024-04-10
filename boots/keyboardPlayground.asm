@@ -24,15 +24,19 @@
 
 
 ;* Store char exercise
-; mov ah, 0x00
-; int 0x16
-; mov [char], al
-; printChar:
-;     mov al, [char]
-;     mov ah, 0x0e
-;     int 0x10
 ; char:
 ;     db 0
+; mov bx, char
+
+; inputChar:
+;     mov ah, 0x00
+;     int 0x16
+;     mov [bx], al
+; printChar:
+;     mov al, [bx]
+;     mov ah, 0x0e
+;     int 0x10
+
 
 
 ;* Store string exercise
