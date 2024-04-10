@@ -1,5 +1,6 @@
 
 
+
 [org 0x7c00] ; Fix pointer offset
 
 ;* Saving an input char to a variable
@@ -21,23 +22,33 @@
 
 
 ;* Typing Exercise
-typingLoop:
-    mov ah, 0x00
-    int 0x16
+; typingLoop:
+;     mov ah, 0x00
+;     int 0x16
+;     mov ah, 0x0e
+;     int 0x10
+;     cmp al, 8
+;     je backspacePressed
+;     endBackspacePressed:
+;     jmp typingLoop
+
+; backspacePressed:
+;     mov al, 32 ; Space
+;     int 0x10
+;     mov al, 8 ; Another backspace
+;     int 0x10
+;     jmp endBackspacePressed
+
+
+mov ah, 0x00
+int 0x16
+mov [char], al
+printChar:
+    mov al, [char]
     mov ah, 0x0e
     int 0x10
-    cmp al, 8
-    je backspacePressed
-    endBackspacePressed:
-    jmp typingLoop
-
-backspacePressed:
-    mov al, 32 ; Space
-    int 0x10
-    mov al, 8 ; Another backspace
-    int 0x10
-    jmp endBackspacePressed
-
+char:
+    db 0
 
 jmp $ ; Infinate loop at end of boot
 times 510 - ($ - $$) db 0 ; define 0 as many times as needed to fill boot sector (512B)

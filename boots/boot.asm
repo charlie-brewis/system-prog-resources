@@ -100,9 +100,9 @@ mov ah, 0x0e
 int 0x10
 
 ; Or we can save the value to a variable
+mov [char], al
 char: 
     db 0
-mov [char], al
 
 
 ;* BOOTING
