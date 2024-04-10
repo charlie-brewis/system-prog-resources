@@ -122,6 +122,40 @@ inputString:
     jmp inputString
 endInput:
 
+
+;* STACK
+; There are 2 special registers we can use:
+;   The base pointer (bp) points to the address of the base of the stack
+;   The stack pointer (sp) points to the address of the top of the stack
+; The rest of the stack is contiguous between the 2
+; Example:
+mov bp, 0x800   ; Set the base pointer to 0x800
+mov sp, bp      ; Since the stack is empty we can set the stack pointer to the base pointer
+mov bh, 'A'
+push bx         ; Give bx some value and push it to the stack
+mov bh, 'B'
+print:
+    mov ah, 0x0e
+    mov al, bh 
+    int 0x10
+    ; Prints bh - 'B'
+pop bx 
+print:
+    mov ah, 0x0e
+    mov al, bh 
+    int 0x10
+    ; Prints bh -'A'
+
+; `pusha` and `popa` are 2 very useful operations that push and pop these 8 registers to the stack:
+; ax, cx, dx, bx, sp, bp, si, di
+; They are pushed in this order and popped in reverse
+; This is useful when the program needs to do another procedure with these registers but wants to save the state for after said procedure
+; ... like a function
+
+
+
+
+
 ;* BOOTING
 ; Jumps to the current memory address - i.e., The boot will infinately loop
 jmp $
