@@ -1,7 +1,7 @@
 ; Assembler Command:
-;       nasm -f bin boot.asm -o boot.bin
+;       nasm -f bin FILE_NAME.asm -o FILE_NAME.bin
 ; VM Command:
-;       qemu-system-x86_64 boot.bin
+;       qemu-system-x86_64 FILE_NAME.bin
 
 
 ; First, we need our OS to actually do something in order to boot.
