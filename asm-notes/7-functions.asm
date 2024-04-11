@@ -34,6 +34,8 @@ printNewlineFunction:
 
 
 
+;* Challenge: Write a function that prints integers in base 10
+
 
 jmp $ 
 times 510 - ($ - $$) db 0

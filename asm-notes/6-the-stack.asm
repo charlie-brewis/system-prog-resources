@@ -52,6 +52,8 @@ printbh2:
 ; Another way we can do this is by using functions...
 
 
+;* Challenge: Read an enter-terminated input string using the stack and print it out
+
 jmp $ 
 times 510 - ($ - $$) db 0
 db 0x55, 0xaa
