@@ -22,12 +22,27 @@ inputLoop:
 setupPrint:
     mov ah, 0x0e
 
-printStack:
-    pop ax
-    mov ah, 0x0e
+; printStackBackwards:
+;     pop ax
+;     mov ah, 0x0e
+;     int 0x10
+;     cmp bp, sp
+;     jne printStackBackwards
+
+printStackForward:
+    decrementStackBase:
+        sub bp, 2   ; Need to sub first as the base (0x800) is empty
+    printValueAtStackBase:
+        mov al, [bp]
+        int 0x10
+    exitIfStackEmpty:
+        cmp bp, sp
+        jne printStackForward
+
+newLine:
+    mov al, 10
     int 0x10
-    cmp bp, sp
-    jne printStack
+  
 
 
 
