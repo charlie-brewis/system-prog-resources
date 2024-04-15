@@ -33,7 +33,8 @@ printbh2:
     int 0x10
     ; This will print the current value of bh ('A')
 
-
+; Note: When you use the push command, the sp will decrement by the number of cells you push,
+;       and when you pop, the sp will increment by the number of cells you pop
 
 ; There are 2 special stack operations called `pusha` and `popa` in x86 asm
 ; These operations push and pop these 8 registers to the stack respectively:
