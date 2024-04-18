@@ -81,4 +81,7 @@ times 512 db 'A'    ; Here i have filled the sector after our boot sector with A
 ; One thing we could use this for is to extend the amount of real-mode code we can write to be more than 512 Bytes
 ;* Challenge:
 ;*      Sometimes, reading from a harddisk can go wrong. When it does, 2 things can happen:
-;*      1) The carry flag (cf)
+;*      1) The carry flag (cf) will be set to 1 - indicating an error
+;*      OR
+;*      2) The number of sectors read by the procedure (al) is incorrect
+;*      Add to your program a way to test for these and print an error message if either errors occur
