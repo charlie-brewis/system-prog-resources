@@ -44,11 +44,11 @@
 [org 0x7c00]
 mov [diskNumber], dl   ; Store the drive number that the boot sector is stored in to a variable
 
-mov ah, 2   ; First, set it in interrupt mode "Read Sectors"
-mov al, 1   ; al is the number of sectors we want to read - as explained above, 1
-mov ch, 0   ; ch stores the cylinder number we want to read from, again explained above
-mov cl, 2   ; cl is the sector number that we want to read from
-mov dh, 0   ; dh is the head number that we want to read from
+mov ah, 2               ; First, set it in interrupt mode "Read Sectors"
+mov al, 1               ; al is the number of sectors we want to read - as explained above, 1
+mov ch, 0               ; ch stores the cylinder number we want to read from, again explained above
+mov cl, 2               ; cl is the sector number that we want to read from
+mov dh, 0               ; dh is the head number that we want to read from
 mov dl, [diskNumber]    ; dl is the drive number we want to read from 
 ; es:bx is the address that we want to load the data to, however since 0x7e00 is accessible with 16-bit addressing, we can set es to 0:
 setEsBx:
@@ -77,8 +77,8 @@ db 0x55, 0xaa
 times 512 db 'A'    ; Here i have filled the sector after our boot sector with A's so that we have something to read from the other sectors for the example
 
 
-
 ; One thing we could use this for is to extend the amount of real-mode code we can write to be more than 512 Bytes
+
 ;* Challenge:
 ;*      Sometimes, reading from a harddisk can go wrong. When it does, 2 things can happen:
 ;*      1) The carry flag (cf) will be set to 1 - indicating an error
