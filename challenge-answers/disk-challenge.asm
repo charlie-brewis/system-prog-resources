@@ -14,8 +14,8 @@ defineRegisters:
     mov dl, [diskNumber]    ; Drive number to read from
     defineLoadLocation:
         push ax 
-        mov ax, 0   ;todo: find out why we shouldn't directly mov 0 into es
-        mov es, ax  ; Set es to 0 as 0x7e00 is addressable with 16 bits
+        mov ax, 0           ; We can't directly move an immediate value to a segment register, so we have to use ax..
+        mov es, ax          ; Set es to 0 as 0x7e00 is addressable with 16 bits
         mov bx, 0x7e00      ; Location in memory to load the sector
         pop ax 
 
@@ -23,8 +23,7 @@ int 0x13
 
 checkErrors:
     checkCarryFlag:
-        cmp cf, 1       ;! cf is not defined
-        jne checkNumSectors
+        jnc checkNumSectors     ; Jump no-carry: jumps if the carry flag is empty
         call printCarryFlagError
     checkNumSectors:
         cmp al, [numSectors]

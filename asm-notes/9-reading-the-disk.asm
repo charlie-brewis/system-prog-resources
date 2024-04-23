@@ -85,4 +85,6 @@ times 512 db 'A'    ; Here i have filled the sector after our boot sector with A
 ;*      OR
 ;*      2) The number of sectors read by the procedure (al) is incorrect
 ;*      Add to your program a way to test for these and print an error message if either errors occur
-;todo: Figure out why this happens
+
+; Note: This could be for many reasons such as disk/hardware issues, insufficient buffer space, compatability issues, etc
+;       The reason why this happens is not tremendously important right now
