@@ -152,7 +152,7 @@ jmp CODE_SEG:start_protected_mode
 
 ; Change the addressing mode to 32-bits
 [bits 32]
-start_addressing_mode:
+start_protected_mode:
     ; Now we can print a character to screen to check whether everything has worked
     ; Except we can't use interrupts... so how?
     ; Well we have to now write to video memory directly
