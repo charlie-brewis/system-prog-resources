@@ -6,7 +6,7 @@
 //   - Specials:
 //       - `x30` = link register (return address)
 //       - `sp`  = stack pointer
-//       - `zr`  = zero register (returns 0 on read, discards writes)
+//       - `xzr` = zero register (returns 0 on read, discards writes) [64b]
 
 
 
@@ -28,7 +28,7 @@ eor x0, x1, x2  // x0 = x1 ^  x2
 // Comparisons
 cmp x0, x1      // Sets flags based on x0 - x1
 b.eq label      // Branch to `label` if equal (x0 == x1)
-b.ne label      // Brancg to `label` if not equal (x0 != x1)
+b.ne label      // Branch to `label` if not equal (x0 != x1)
 /// etc
 
 
@@ -40,6 +40,8 @@ b.ne label      // Brancg to `label` if not equal (x0 != x1)
 //          -> These register values are not preserved across function calls and so must be saved to the stack beforehand
 //     - Callee must preserve: x19 - x28, sp, fp, lr
 //          -> A function must restore these values before returning - they are long-term "safe" registers
+//     - Call a function with `bl` ("branch with link" - saves return address in x30/lr), e.g.:
+//         - bl some_function
 
 
 
@@ -53,3 +55,32 @@ ldr x1, =msg
 mov x2, #15
 mov x8, #64  // write
 svc #0
+
+
+//-------------------------------------------------------------------------------------------------
+// A Clarification on Moving immediate values
+
+// In AArch64, you cant load arbitary 64-bit constants directly to registers with a single instructions
+// So the instruction:
+mov x0, 0x123456789ABCDEF0
+// is invalid and must instead be written with a sequence of specialised instructions
+
+// 'Move with zero' - `movz`
+// Loads a 16-bit immediate to a register and zeroes out the rest of the bits
+// We can use 'logical shift left' - `lsl` to determine where in the register they are placed
+movz x0, #0x1234           // x0 = 0x0000000000001234
+movz x0, #0x1234, lsl #16  // x0 = 0x0000000012340000 - Note that since this is hexadecimal a binary lsl of 16 is 4 digits
+
+// 'Move with keep' - `movk`
+// Also writes a 16-bit immediate to a register, but keeps the other bits unchanged
+// Used to build up large values in pieces
+
+movz x0, #0xABCD, lsl #48  // Set the upper 16 bits
+movk x0, #0x1234, lsl #32  // Set the next 16 bits
+movk x0, #0x5678, lsl #16  // Set the next 16 bits
+movk x0, #0x9ABC           // Set the lower 16 bits
+// x0 = 0xABCD123456789ABC
+
+// Note that most assemblers will allow you to write it with a single `mov` instruction but it is important
+// to undertstand what's going on under the hood
+//--------------------------------------------------------------------------------------------------
