@@ -71,6 +71,71 @@ mov x8, #64  // write
 svc #0
 
 
+
+// Stack Frame Management
+//
+// When a function is called it needs:
+//     - Space to store temporary variables
+//     - To save certain registers so it can restore them before returning
+//     - To maintain a predictable structure
+// This workspace is called the "stack frame", which lives on the stack
+//
+// Key Registers:
+// - 'stack pointer' (`sp`)  -> Points to the top of the stack
+// - 'frame pointer' (`x29`) -> Points to the base of this function's frame 
+// - 'link register' (`x30` / `lr`) -> Stores the return address for the `ret` instruction
+//
+//
+// Example:
+// 1. Function Prologue:
+stp x29, x30, [sp, #-16]!  // Step 1: Save x29 (frame pointer) and x30 (link register) to memory
+                                    // Note its 16 bytes because each 64 bit register is 8 bytes
+mov x29, sp                // Step 2: Set up new frame pointer
+//  Some notes about this syntax:
+//      - `stp` = 'store pair' (saves 2 registers to memory at once), so here the values of x29 and 
+//         x30 are being stored at [sp - 16] and [[sp - 16] + 8] respectively
+//      - [sp, #-16]! = subtract 16 from sp and store at that new location (sp -= 16) -> Note we 
+//          subtract because the stack grows downward
+//      - Note the bang just updates `sp` with this new value
+// `stp x29, x30, [sp, #-16]!` == `sp -= 16; str x29, sp; str x30, [sp + 8];`
+//
+// 2. Function Epilogue
+ldp x29, x30, [sp], #16  // Step 1: Restore x29 and x30, and move sp back up
+ret                      // Step 2: Return to the call address (stored in x30)
+//  Notice the syntax is very similar:
+//      - Step 1 loads from sp and adds 16 after this time
+//      - This puts back our frame pointer, return address, and stack pointer to what they were before the function was called
+//
+//
+// So why do we do all this?
+// This precise methodology ensures that:
+//     - The function can safely call other functions (because it has preserved x30 in memory)
+//     - The calling function's stack frame stays intact
+//     - The stack is cleaned up correctly when returning
+//
+// We can also reserve space for local variables:
+sub sp, sp, #32  // Reserve 32 bytes for local vars
+// Use [sp] ... [sp + 31] for tempoarary storage
+add sp, sp, #32  // Clean up before epilogue
+
+
+my_function:
+    // Function Prologue //
+    stp x29, x30, [sp, #-16]!   // Save frame pointer (x29) and return address (x30), adjust sp down
+    mov x29, sp                 // Set new frame pointer (x29 = sp)
+
+    sub sp, sp, #32             // Reserve 32 bytes for local variables (optional)
+
+    // Function Body //
+    // ... use [sp] to [sp+31] for local variables if needed ...
+
+    add sp, sp, #32             // Free local variable space
+
+    ldp x29, x30, [sp], #16     // Restore old frame pointer and return address, adjust sp up
+    ret                         // Return to caller using x30
+
+
+
 //-------------------------------------------------------------------------------------------------
 // A Clarification on Moving immediate values
 
@@ -98,3 +163,7 @@ movk x0, #0x9ABC           // Set the lower 16 bits
 // Note that most assemblers will allow you to write it with a single `mov` instruction but it is important
 // to undertstand what's going on under the hood
 //--------------------------------------------------------------------------------------------------
+
+
+
+
