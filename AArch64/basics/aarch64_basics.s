@@ -4,7 +4,7 @@
 //   - General Purpose (64-bit): `x0` to `x30`
 //   - Lower 32-bit half: `w0` to `w30`
 //   - Specials:
-//       - `x30` = link register (return address)
+//       - `x30` = link register (return address), also called `lr`
 //       - `sp`  = stack pointer
 //       - `xzr` = zero register (returns 0 on read, discards writes) [64b]
 
@@ -13,23 +13,33 @@
 // Basic Instructions
 
 // Data Movement
-mov x0, #123    // Set x0 to 123
-mov x1, x0      // Copy the value of x0 into x1
+mov x0, #123       // Set x0 to 123
+mov x1, x0         // Copy the value of x0 into x1
 
 // Arithmetic
-add x0, x1, x2  // x0 = x1 + x2
-sub x0, x1, x2  // x0 = x1 - x2
+add x0, x1, x2     // x0 = x1 + x2
+sub x0, x1, x2     // x0 = x1 - x2
 
 // Logical
-and x0, x1, x2  // x0 = x1 && x2
-orr x0, x1, x2  // x0 = x1 || x2
-eor x0, x1, x2  // x0 = x1 ^  x2
+and x0, x1, x2     // x0 = x1 && x2
+orr x0, x1, x2     // x0 = x1 || x2
+eor x0, x1, x2     // x0 = x1 ^  x2
 
 // Comparisons
-cmp x0, x1      // Sets flags based on x0 - x1
-b.eq label      // Branch to `label` if equal (x0 == x1)
-b.ne label      // Branch to `label` if not equal (x0 != x1)
-/// etc
+cmp x0, x1         // Sets flags based on x0 - x1
+b.eq label         // Branch to `label` if equal (x0 == x1)
+b.ne label         // Branch to `label` if not equal (x0 != x1)
+b.lt label         // Signed less than
+b.ge label         // Signed greater or equal
+b.hi label         // Unsigned >
+b.ls label         // Unsigned <=
+
+cset w0, eq        // Set w0 = 1, if equal, else 0
+
+// Memory Access
+ldr x0, [x1]       // Load the value of the memory pointed to by x1 to x0
+str x0, [x1]       // Store x0 to the memory pointed to by x1
+ldr x0, [x1, #8]   // Offset - load from x1 + 8
 
 
 
@@ -40,8 +50,12 @@ b.ne label      // Branch to `label` if not equal (x0 != x1)
 //          -> These register values are not preserved across function calls and so must be saved to the stack beforehand
 //     - Callee must preserve: x19 - x28, sp, fp, lr
 //          -> A function must restore these values before returning - they are long-term "safe" registers
-//     - Call a function with `bl` ("branch with link" - saves return address in x30/lr), e.g.:
+//     - Call a function with `bl` ("branch with link" - saves return address in x30), e.g.:
 //         - bl some_function
+//           !
+//             Remember here the `lr` (x30) stores the address the program should return back to,
+//             while x0 stores the return value of the function. 
+//           !
 
 
 
