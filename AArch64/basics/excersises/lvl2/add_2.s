@@ -48,10 +48,10 @@ _start:
 
     // Syscall: write(stdout, buffer, 2)
     mov x0, #1  // file_desc = stdout
-    mov x1, x6  // msg_adr = x3
+    mov x1, x6  // msg_adr = buffer
     mov x2, #2  // msg_len = 2 (1, 2)
     mov x8, #64 // syscall: write
-    svc 0
+    svc #0
 
     // Exit
     mov x0, #0
