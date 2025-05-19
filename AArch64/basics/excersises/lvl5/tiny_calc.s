@@ -103,6 +103,8 @@ mult:
 
 
 
+// Note that this program only works for 3-digit numbers (due to ASCII conversion algorithm),
+// therefore ensure that num1 * num2 < 1000 before running to ensure non-eronious result
 // num1: x19; num2: x20; buffer_pointer: x21
 _start:
     // Store num1 and num2 as static values
