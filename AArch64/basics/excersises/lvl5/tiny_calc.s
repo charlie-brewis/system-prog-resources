@@ -68,12 +68,48 @@ to_ASCII:
     ldp x29, x30, [sp], #16    // Reset fp and lr
     ret
 
+// Multiplies two inputted unsigned integers together
+// Args: x0 = num1; x1 = num2;
+mult:
+    // Function Prologue
+    stp x29, x30, [sp, #-16]!  // Store fp and lr to frame
+    mov x29, sp                // Setup new fp
+
+    // Check either number is 0
+    cmp x0, #0
+    b.eq mult_exit
+    cmp x1, #0
+    b.eq mult_exit
+
+    mov x2, x0      // Save original value of num1
+    sub x1, x1, #1  // Decrement num2 by 1 as we imply first iteration
+    
+    mult_loop:
+        // Exit condition
+        cmp x1, #0
+        b.eq mult_exit
+
+        // Perform iterative multiplication
+        add x0, x0, x2 
+
+        sub x1, x1, #1
+        b mult_loop
+        
+    mult_exit:
+        // Function Epilogue
+        ldp x29, x30, [sp], #16    // Reset fp and lr
+        ret
+
+
+
 
 // num1: x19; num2: x20; x21: buffer_pointer
 _start:
+    // Store num1 and num2 as static values
     mov x19, #123
     mov x20, #987
     
+    // Set up the buffer
     adr x21, buffer
     mov x0, #10 
     strb w0, [x21, #3]  // Store newline at buffer[3]
