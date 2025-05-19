@@ -78,11 +78,11 @@ mult:
     // Check either number is 0
     cmp x0, #0
     b.eq mult_exit
-    cmp x1, #0
+    cmp x1, #0      //! x0 will need to be set to 0 before exit
     b.eq mult_exit
 
     mov x2, x0      // Save original value of num1
-    sub x1, x1, #1  // Decrement num2 by 1 as we imply first iteration
+    sub x1, x1, #1  // Decrement num2 by 1 as we imply first iteration //! Also means we can use x1 = 1 as a base case
     
     mult_loop:
         // Exit condition
@@ -103,25 +103,39 @@ mult:
 
 
 
-// num1: x19; num2: x20; x21: buffer_pointer
+// num1: x19; num2: x20; buffer_pointer: x21
 _start:
     // Store num1 and num2 as static values
-    mov x19, #123
-    mov x20, #987
+    mov x19, #22
+    mov x20, #7 
     
     // Set up the buffer
     adr x21, buffer
     mov x0, #10 
     strb w0, [x21, #3]  // Store newline at buffer[3]
 
-    // Convert num1 to ASCII and store in buffer
-    mov x0, x19  // num: x19
-    mov x1, x21  // buffer_pointer: x21
+    // Convert add result to ASCII and store in buffer
+    add x0, x19, x20  // num: num1 + num 2
+    mov x1, x21       // buffer_pointer: x21
     bl to_ASCII
 
     // Print the buffer
     mov x0, x21  // buffer_pointer: x21
     mov x1, #4   // buffer_length:  4
+    bl print_buffer
+
+    // Calculate Multiply result
+    mov x0, x19  // num1: num1
+    mov x1, x20  // num2: num2
+    bl mult      // x0 = num1 * num2
+
+    // Convert mult result to ASCII and store in buffer
+    mov x1, x21  // buffer_pointer: x21
+    bl to_ASCII
+
+    // Print the buffer
+    mov x0, x21  // buffer_pointer: x21
+    mov x1, #4   // buffer_length: 4
     bl print_buffer
 
     // Exit
